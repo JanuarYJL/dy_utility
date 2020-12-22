@@ -2,6 +2,8 @@
 #define DY_NET_CLIENT_H
 
 #include <atomic>
+
+#include "logger/logger.hpp"
 #include "session.h"
 
 namespace dy
@@ -110,8 +112,7 @@ public:
         }
         else
         {
-            //UtilityBoostLogger(info) << "connect failed, remote_addr:" << remote_host_ << "/" << remote_port_;
-            //int iii = 0;
+            UTILITY_LOGGER(info) << "connect failed, remote_addr:" << remote_host_ << "/" << remote_port_;
         }
     }
 
@@ -168,7 +169,7 @@ private:
                 session_ptr_->start();
                 session_ptr_->async_send(login_data_.c_str(), login_data_.length());
 
-                //UtilityBoostLogger(info) << "connect success, endpoint:" << endpoint_iter->endpoint();
+                UTILITY_LOGGER(info) << "connect success, endpoint:" << endpoint_iter->endpoint();
             }
             // 继续连接下一个地址
             else if (++endpoint_iter != resolver_iter_type())
@@ -180,7 +181,7 @@ private:
             // 连接失败
             else
             {
-                //UtilityBoostLogger(info) << "connect failed, error_code:" << ec;
+                UTILITY_LOGGER(info) << "connect failed, error_code:" << ec;
                 // 连接失败时延迟5s进行重连
                 auto _self = this->shared_from_this();
                 auto delay_timer = std::make_shared<timer_type>(ioc_);
@@ -190,7 +191,7 @@ private:
         }
         catch (std::exception &ecp)
         {
-            //UtilityBoostLogger(error) << __FUNCTION__ << " catch:" << ecp.what();
+            UTILITY_LOGGER(error) << __FUNCTION__ << " catch:" << ecp.what();
         }
     }
 
